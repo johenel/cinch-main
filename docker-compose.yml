@@ -2,35 +2,60 @@ services:
   product:
     build: ./cinch-products
     volumes:
-      - ./cinch-products/.env:/var/www/.env
+      - ./cinch-products:/var/www
+    networks:
+      - ecommerce
+
+  product-nginx:
+    build:
+      context: ./cinch-products
+      dockerfile: Dockerfile.nginx
     ports:
-      - "8001:8000"
-    env_file:
-      - ./cinch-products/.env
+      - "8001:80"
+    depends_on:
+      - product
+    volumes:
+      - ./cinch-products:/var/www
     networks:
       - ecommerce
 
   checkout:
     build: ./cinch-checkout
     volumes:
-      - ./cinch-checkout/.env:/var/www/.env
+      - ./cinch-checkout:/var/www
+    networks:
+      - ecommerce
+
+  checkout-nginx:
+    build:
+      context: ./cinch-checkout
+      dockerfile: Dockerfile.nginx
     ports:
-      - "8002:8000"
-    env_file:
-      - ./cinch-checkout/.env
+      - "8002:80"
     depends_on:
-      - db
+      - checkout
+    volumes:
+      - ./cinch-checkout:/var/www
     networks:
       - ecommerce
 
   email:
     build: ./cinch-mailer
     volumes:
-      - ./cinch-mailer/.env:/var/www/.env
+      - ./cinch-mailer:/var/www
+    networks:
+      - ecommerce
+
+  email-nginx:
+    build:
+      context: ./cinch-mailer
+      dockerfile: Dockerfile.nginx
     ports:
-      - "8003:8000"
-    env_file:
-      - ./cinch-mailer/.env
+      - "8003:80"
+    depends_on:
+      - email
+    volumes:
+      - ./cinch-mailer:/var/www
     networks:
       - ecommerce
 
@@ -39,8 +64,8 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - product
-      - checkout
+      - product-nginx
+      - checkout-nginx
     networks:
       - ecommerce
 
@@ -60,7 +85,6 @@ services:
 
 networks:
   ecommerce:
-    driver: bridge
 
 volumes:
   db_data:
