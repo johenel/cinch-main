@@ -59,6 +59,22 @@ services:
     networks:
       - ecommerce
 
+  redis:
+    image: redis:alpine
+    networks:
+      - ecommerce
+
+  email-worker:
+    build: ./cinch-mailer
+    command: php artisan queue:work --verbose --tries=3 --timeout=90
+    volumes:
+      - ./cinch-mailer:/var/www
+    depends_on:
+      - email
+      - redis
+    networks:
+      - ecommerce
+
   frontend:
     build: ./cinch-frontend
     ports:
@@ -80,6 +96,14 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+    networks:
+      - ecommerce
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "8025:8025"
+      - "1025:1025"
     networks:
       - ecommerce
 
