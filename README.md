@@ -39,7 +39,7 @@ The folder structure should look like this:
 - - cinch-mailer
 - - cinch-frontend
 
-One confirmed, proceed with the following commands
+One confirmed, proceed with the following commands (You should be in the main directory level)
 
 ```
     docker-compose build
