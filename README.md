@@ -1,6 +1,11 @@
 ## Summary
 A simple test project (product-checkout-order with email notification) that is structured in micro service format and controlled in docker environment.
 
+## Note
+- No images.
+- No user authentication.
+- Just a simple guest-product-checkout order cycle.
+
 #### Architecture
 - Micro service
 #### Deployment
